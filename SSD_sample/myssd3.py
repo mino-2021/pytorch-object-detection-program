@@ -13,7 +13,7 @@ from multiboxloss import MultiBoxLoss
 from mydataloader2 import *
 from augmentations import SSDAugmentation
 
-## (1) ãƒ‡ãƒ¼ã‚¿ã®æº–å‚™ã¨è¨­å®š
+## (1) ƒf[ƒ^‚Ì€”õ‚Æİ’è
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 batch_size = 30
 augment = SSDAugmentation()
@@ -21,26 +21,26 @@ prepro = PreProcess(augment)
 dirpath = './VOCdevkit/VOC2012/JPEGImages/'
 epoch_num = 15
 
-## (2) ãƒ¢ãƒ‡ãƒ«ã®å®šç¾©
+## (2) ƒ‚ƒfƒ‹‚Ì’è‹`
 from mynet import SSD
 
-## (3) ãƒ¢ãƒ‡ãƒ«ã®ç”Ÿæˆï¼Œæå¤±é–¢æ•°ï¼Œæœ€é©åŒ–é–¢æ•°ã®è¨­å®š
-##   (3.1) ãƒ¢ãƒ‡ãƒ«ã®ç”Ÿæˆ
+## (3) ƒ‚ƒfƒ‹‚Ì¶¬C‘¹¸ŠÖ”CÅ“K‰»ŠÖ”‚Ìİ’è
+##   (3.1) ƒ‚ƒfƒ‹‚Ì¶¬
 net = SSD()
-vgg_weights = torch.load('vgg16_reducedfc.pth')
+vgg_weights = torch.load('./models/vgg16_reducedfc.pth')
 net.vgg.load_state_dict(vgg_weights)
 net.to(device)
 
-##   (3.2) æå¤±é–¢æ•° ã®è¨­å®š
+##   (3.2) ‘¹¸ŠÖ” ‚Ìİ’è
 optimizer = optim.SGD(net.parameters(),
                       lr=1e-3,momentum=0.9,
                       weight_decay=5e-4)
 
-##   (3.3) æœ€é©åŒ–é–¢æ•°ã®è¨­å®š
+##   (3.3) Å“K‰»ŠÖ”‚Ìİ’è
 from multiboxloss import MultiBoxLoss
 criterion = MultiBoxLoss(device=device)
 
-## (4) å­¦ç¿’
+## (4) ŠwK
 net.train()
 for ep in range(epoch_num):
     i = 0
@@ -64,6 +64,6 @@ for ep in range(epoch_num):
         loss_l, loss_c  = 0, 0
         xs, ys, bc = [], [], 0
         i += 1        
-    outfile = "ssd3-" + str(ep) + ".model"
+    outfile = "./models/ssd3-" + str(ep) + ".pth"
     torch.save(net.state_dict(),outfile)
     print(outfile," saved")

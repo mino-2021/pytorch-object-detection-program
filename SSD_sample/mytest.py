@@ -7,8 +7,11 @@ import torch.nn as nn
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
-from utils.mynet import SSD
-from utils.myfunctions import decode
+from mynet import SSD
+from myfunctions import decode
+
+import warnings
+warnings.filterwarnings('ignore')
 
 argvs = sys.argv
 argc = len(argvs)
@@ -48,12 +51,21 @@ for i in range(detections.size(1)):
         score = detections[0,i,j,0]
         label_name = labels[i-1]
         display_txt = '%s: %.2f'%(label_name, score)
+        print(display_txt)
         pt = (detections[0,i,j,1:]*scale).cpu().numpy()
+        #print("pt=",pt)
         coords = (pt[0], pt[1]), pt[2]-pt[0]+1, pt[3]-pt[1]+1
+        #print("coords=",coords)
         color = colors[i]  ## ÉNÉâÉXñàÇ…êFÇ™åàÇ‹Ç¡ÇƒÇ¢ÇÈ
+        #print("color=",color)
+        
         currentAxis.add_patch(plt.Rectangle(*coords, fill=False, edgecolor=color, linewidth=2))
         currentAxis.text(pt[0], pt[1], display_txt, bbox={'facecolor':color, 'alpha':0.5})
         j+=1
+
+
+plt.savefig("result.jpg")
+print("save as result.jpg")
 plt.show()
 
 
